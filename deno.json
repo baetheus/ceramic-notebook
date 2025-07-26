@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "fun": "jsr:@baetheus/fun@^2.2.2",
+    "sqlite": "jsr:@db/sqlite@^0.12.0"
+  }
+}

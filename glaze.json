@@ -1,0 +1,55 @@
+{
+  "ID": 1,
+  "Name": "Base Glaze Peltzman",
+  "Created By": {
+    "Name": "Glazy Admin",
+    "ID": 1
+  },
+  "Date Created": "2013-06-24",
+  "Type": "Recipe",
+  "Subtype": "Glaze",
+  "Cone": 8,
+  "Surface": "Glossy",
+  "Transparency": "Transparent",
+  "Description": "Wintergreen: + copper carb 0.5%",
+  "Ingredients": [
+    {
+      "ID": 15470,
+      "Name": "Minspar 200",
+      "Percentage": 48
+    },
+    {
+      "ID": 15400,
+      "Name": "Silica",
+      "Percentage": 24
+    },
+    {
+      "ID": 15457,
+      "Name": "Whiting",
+      "Percentage": 18
+    },
+    {
+      "ID": 15137,
+      "Name": "EP Kaolin",
+      "Percentage": 5
+    },
+    {
+      "ID": 15467,
+      "Name": "Zinc Oxide",
+      "Percentage": 5
+    }
+  ],
+  "Percent Analysis": {
+    "SiO2": 59.3609,
+    "Al2O3": 10.7873,
+    "Na2O": 3.1374,
+    "K2O": 1.9939,
+    "MgO": 0.0052,
+    "CaO": 10.8304,
+    "P2O5": 0.013,
+    "TiO2": 0.019,
+    "Fe2O3": 0.0664,
+    "ZnO": 5,
+    "LOI": 8.7865
+  }
+}
