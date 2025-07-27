@@ -1,5 +1,6 @@
 import * as S from "fun/schemable";
 import * as D from "fun/decoder";
+import * as E from "fun/either";
 import { pipe } from "fun/fn";
 
 const User = S.schema((s) => s.struct({ ID: s.number(), Name: s.string() }));
@@ -55,7 +56,7 @@ const Analysis = S.schema((s) =>
   })
 );
 
-const Material = S.schema((s) =>
+export const Material = S.schema((s) =>
   pipe(
     s.struct({
       ID: s.number(),
@@ -89,12 +90,16 @@ const DecoderMaterials = D.json(Materials(D.SchemableDecoder));
 
 export const parseFromFile = async (
   file_path: string = "./glazy.json",
-): Promise<D.Decoded<Materials>> => {
+): Promise<Materials> => {
   const file_raw = await Deno.readFile(file_path);
   const decoder = new TextDecoder();
   const file = decoder.decode(file_raw);
   const parsed = DecoderMaterials(file);
-  return parsed;
+  if (E.isLeft(parsed)) {
+    console.error(D.draw(parsed.left));
+    throw new Error(`Unable to parse ${file_path}`);
+  }
+  return parsed.right;
 };
 
 export const TYPES = [

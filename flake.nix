@@ -7,9 +7,17 @@
   outputs = { self, nixpkgs, utils }:
     utils.lib.eachDefaultSystem (system: let
       pkgs = import nixpkgs { inherit system; };
+
       shell = with pkgs; mkShell {
-        # Insert Packages Here
-        packages = [deno];
+        packages = [
+          # Insert Packages Here
+          deno
+          dbmate
+        ];
+
+        shellHook = ''
+          export DATABASE_URL="sqlite:db/database.sqlite3"
+        '';
       };
     in {
       devShells.default = shell;

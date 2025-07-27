@@ -1,17 +1,18 @@
 import * as S from "fun/schemable";
 import * as D from "fun/decoder";
+import * as E from "fun/either";
 
 const Element = S.schema((s) =>
   s.struct({
     // Description
+    number: s.number(),
     name: s.string(),
     symbol: s.string(),
     category: s.string(),
     source: s.string(),
     summary: s.string(),
-    // Date
+    // Data
     atomic_mass: s.number(),
-    number: s.number(),
     period: s.number(),
     group: s.number(),
     phase: s.string(),
@@ -23,20 +24,24 @@ const Element = S.schema((s) =>
   })
 );
 
-const Elements = S.schema((s) => s.array(Element(s)));
+export const Elements = S.schema((s) => s.array(Element(s)));
 
 const ElementsFile = S.schema((s) => s.struct({ elements: Elements(s) }));
 
-type ElementsFile = S.TypeOf<typeof ElementsFile>;
+export type ElementsFile = S.TypeOf<typeof ElementsFile>;
 
 const DecoderElementsFile = D.json(ElementsFile(D.SchemableDecoder));
 
 export const parseFromFile = async (
   file_path: string = "./elements.json",
-): Promise<D.Decoded<ElementsFile>> => {
+): Promise<ElementsFile> => {
   const file_raw = await Deno.readFile(file_path);
   const decoder = new TextDecoder();
   const file = decoder.decode(file_raw);
   const parsed = DecoderElementsFile(file);
-  return parsed;
+  if (E.isLeft(parsed)) {
+    console.error(D.draw(parsed.left));
+    throw new Error(`Unable to parse ${file_path}.`);
+  }
+  return parsed.right;
 };
