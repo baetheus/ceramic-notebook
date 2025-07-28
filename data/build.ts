@@ -1,13 +1,18 @@
 import { Database } from "sqlite";
 
-import * as Glazy from "./read_glazy.ts";
 import * as Elements from "./read_elements.ts";
 
 /**
  * Create Database
  */
 
-const db = new Database("test.db");
+const DATABASE_URL = Deno.env.get("DATABASE_URL");
+if (DATABASE_URL === undefined) {
+  throw new Error("DATABASE_URL environment variable must be set");
+}
+console.log(`DATABASE_URL=${DATABASE_URL}`);
+
+const db = new Database(DATABASE_URL.split(":")[1]);
 
 /**
  * Create Elements table and insert all elements
@@ -15,21 +20,10 @@ const db = new Database("test.db");
 
 const { elements } = await Elements.parseFromFile("./data/elements.json");
 
-// Create Table
-db.exec(
-  `CREATE TABLE IF NOT EXISTS elements (number INTEGER PRIMARY KEY ASC, name NOT NULL, symbol NOT NULL, category NOT NULL, source NOT NULL, summary NOT NULL, atomic_mass NOT NULL, boil, melt, discovered_by, named_by);`,
-);
-
 // Insert Elements
 elements.forEach((e) => {
-  db.sql`INSERT INTO elements VALUES(${e.number}, ${e.name}, ${e.symbol}, ${e.category}, ${e.source}, ${e.summary}, ${e.atomic_mass}, ${e.boil}, ${e.melt}, ${e.discovered_by}, ${e.named_by}) ON CONFLICT DO NOTHING;`;
+  db.sql`INSERT INTO elements VALUES(${e.number}, ${e.name}, ${e.symbol}, ${e.category}, ${e.source}, ${e.summary}, ${e.atomic_mass}, ${Date.now()}, ${Date.now()}, ${e.boil}, ${e.melt}, ${e.discovered_by}, ${e.named_by}) ON CONFLICT DO NOTHING;`;
 });
 
 const result = db.sql`select * from elements`;
 console.log(result);
-
-/**
- * Create Materials table and insert all elements
- */
-
-const materials = await Glazy.parseFromFile();
