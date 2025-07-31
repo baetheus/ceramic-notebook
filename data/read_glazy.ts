@@ -106,7 +106,7 @@ export const TYPES = [
   "Recipe",
   "Analysis",
   "Material",
-];
+] as const;
 
 export const COUNTRIES = [
   "Denmark",
@@ -156,7 +156,7 @@ export const COUNTRIES = [
   "Colombia",
   "Hong Kong",
   "Peru",
-];
+] as const;
 
 export const ATMOSPHERES = [
   "Oxidation",
@@ -166,7 +166,7 @@ export const ATMOSPHERES = [
   "Neutral",
   "Raku",
   "Luster",
-];
+] as const;
 
 export const SUBTYPES = [
   "Glaze",
@@ -283,14 +283,14 @@ export const SUBTYPES = [
   "Primitive",
   "Clay Body - Earthenware - Sculpture",
   "Clay Body - Stoneware - Salt",
-];
+] as const;
 
 export const TRANSPARENCIES = [
   "Transparent",
   "Semi-opaque",
   "Translucent",
   "Opaque",
-];
+] as const;
 
 export const CONES = [
   8,
@@ -469,7 +469,7 @@ export const SURFACES = [
   "Semi-matte",
   "Smooth Matte",
   "Stony Matte",
-];
+] as const;
 
 export const ANALYSIS = [
   "SiO2",
@@ -514,4 +514,50 @@ export const ANALYSIS = [
   "Sb2O3",
   "WO3",
   "La2O3",
-];
+] as const;
+
+export const ANALYSIS_NAMES = {
+  "SiO2": "Silicon Dioxide",
+  "Al2O3": "Aluminum Oxide",
+  "Na2O": "Sodium Oxide",
+  "K2O": "Potassium Oxide",
+  "MgO": "Magnesium Oxide",
+  "CaO": "Calcium Oxide",
+  "P2O5": "Phosphorus Pentoxide",
+  "TiO2": "Titanium Dioxide",
+  "Fe2O3": "Iron(III) Oxide",
+  "ZnO": "Zinc Oxide",
+  "LOI": "Loss on Ignition",
+  "ZrO2": "Zirconium Dioxide",
+  "CuO": "Copper(II) Oxide",
+  "B2O3": "Boron Trioxide",
+  "Li2O": "Lithium Oxide",
+  "BaO": "Barium Oxide",
+  "CoO": "Cobalt(II) Oxide",
+  "SrO": "Strontium Oxide",
+  "MnO": "Manganese(II) Oxide",
+  "SnO2": "Tin Dioxide",
+  "FeO": "Iron(II) Oxide",
+  "Cr2O3": "Chromium(III) Oxide",
+  "MnO2": "Manganese Dioxide",
+  "F": "Fluorine",
+  "NiO": "Nickel(II) Oxide",
+  "Pr2O3": "Praseodymium(III) Oxide",
+  "V2O5": "Vanadium Pentoxide",
+  "PbO": "Lead(II) Oxide",
+  "Bi2O3": "Bismuth(III) Oxide",
+  "Cu2O": "Copper(I) Oxide",
+  "MoO3": "Molybdenum Trioxide",
+  "CdO": "Cadmium Oxide",
+  "ZrO": "Zirconium Oxide",
+  "U3O8": "Triuranium Octoxide",
+  "Nd2O3": "Neodymium(III) Oxide",
+  "Er2O3": "Erbium(III) Oxide",
+  "Ho2O3": "Holmium(III) Oxide",
+  "CeO2": "Cerium Dioxide",
+  "Ag2O": "Silver(I) Oxide",
+  "Sb2O3": "Antimony(III) Oxide",
+  "WO3": "Tungsten Trioxide",
+  "La2O3": "Lanthanum(III) Oxide",
+} as const;
+

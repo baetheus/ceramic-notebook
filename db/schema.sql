@@ -18,8 +18,6 @@ CREATE TABLE molecules(
   molecule_id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
   symbol TEXT NOT NULL,
-  category TEXT NOT NULL,
-  summary TEXT NOT NULL,
   molar_mass REAL NOT NULL,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL
