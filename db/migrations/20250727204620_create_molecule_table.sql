@@ -6,8 +6,8 @@ CREATE TABLE molecules(
   name TEXT NOT NULL,
   symbol TEXT NOT NULL,
   molar_mass REAL NOT NULL,
-  created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
+  created_at TEXT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NULL DEFAULT (datetime('now'))
 ) STRICT;
 
 CREATE TABLE molecule_elements(

@@ -7,20 +7,20 @@ CREATE TABLE elements(
   source TEXT NOT NULL,
   summary TEXT NOT NULL,
   atomic_mass REAL NOT NULL,
-  created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL,
   boil REAL,
   melt REAL,
   discovered_by TEXT,
-  named_by TEXT
+  named_by TEXT,
+  created_at TEXT DEFAULT (datetime('now')),
+  updated_at TEXT DEFAULT (datetime('now'))
 ) STRICT;
 CREATE TABLE molecules(
   molecule_id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
   symbol TEXT NOT NULL,
   molar_mass REAL NOT NULL,
-  created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
+  created_at TEXT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NULL DEFAULT (datetime('now'))
 ) STRICT;
 CREATE TABLE molecule_elements(
   molecule_id INTEGER NOT NULL REFERENCES molecules(molecule_id) ON DELETE CASCADE,
@@ -33,18 +33,18 @@ CREATE TABLE materials(
   name TEXT NOT NULL,
   category TEXT NOT NULL,
   summary TEXT NOT NULL,
-  created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
+  created_at TEXT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NULL DEFAULT (datetime('now'))
 ) STRICT;
 CREATE TABLE material_analysis(
   material_analysis_id INTEGER PRIMARY KEY,
-  material_id INTEGER REFERENCES materials(material_id) ON DELETE CASCADE,
+  material_id INTEGER NOT NULL REFERENCES materials(material_id) ON DELETE CASCADE,
   notes TEXT NOT NULL,
-  created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
+  created_at TEXT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NULL DEFAULT (datetime('now'))
 ) STRICT;
 CREATE TABLE material_analysis_molecules(
-  material_analysis_id INTEGER NOT NULL REFERENCES material_analysis(molecule_id) ON DELETE CASCADE,
+  material_analysis_id INTEGER NOT NULL REFERENCES material_analysis(material_analysis_id) ON DELETE CASCADE,
   molecule_id INTEGER NOT NULL REFERENCES molecules(molecule_id) ON DELETE CASCADE,
   percentage REAL NOT NULL,
   PRIMARY KEY(material_analysis_id, molecule_id)
@@ -54,15 +54,15 @@ CREATE TABLE recipes(
   name TEXT NOT NULL,
   category TEXT NOT NULL,
   summary TEXT NOT NULL,
-  created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
+  created_at TEXT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NULL DEFAULT (datetime('now'))
 ) STRICT;
 CREATE TABLE recipe_revisions(
   recipe_revision_id INTEGER PRIMARY KEY,
-  recipe_id INTEGER REFERENCES recipes(recipe_id) ON DELETE CASCADE,
+  recipe_id INTEGER NOT NULL REFERENCES recipes(recipe_id) ON DELETE CASCADE,
   notes TEXT NOT NULL,
-  created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
+  created_at TEXT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NULL DEFAULT (datetime('now'))
 ) STRICT;
 CREATE TABLE recipe_revision_materials(
   recipe_revision_id INTEGER NOT NULL REFERENCES recipe_revisions(recipe_revision_id) ON DELETE CASCADE,

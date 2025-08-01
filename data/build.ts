@@ -134,3 +134,19 @@ molar_masses.forEach((m, n) => {
     db.sql`INSERT INTO molecule_elements VALUES(${n}, ${element.number}, ${atom_count}) ON CONFLICT DO NOTHING;`;
   });
 });
+
+/**
+ * Now to add materials
+ */
+
+console.log(
+  `Inserting ${materials.length} materials into the materials table.`,
+);
+
+materials.forEach((m, n) => {
+  db.sql`INSERT INTO materials VALUES(${n}, ${m.Name}, ${m.Subtype ?? "Raw"}, ${
+    m.Description ?? ""
+  }, ${Date.now()}, ${Date.now()}) ON CONFLICT DO NOTHING;`;
+
+  const analysis = m["Percent Analysis"]
+});
