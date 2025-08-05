@@ -1,4 +1,5 @@
-import type { Either } from "fun/either";
+import type { These } from "fun/these";
+import type { Spread } from "fun/kind";
 import {
   Element,
   Material,
@@ -12,74 +13,76 @@ import {
 } from "../db/schema.ts";
 
 export type Table<Full, Create, Update, Err> = {
-  create(data: Create): Either<Err, Full>;
+  create(create: readonly [Create, ...Create[]]): These<Err, readonly Full[]>;
   find_by<K extends keyof Full>(
     match_columns: K[],
-  ): (match: Pick<Full, K>) => Either<Err, Full[]>;
+  ): (match: Pick<Full, K>) => These<Err, readonly Full[]>;
   update_by<K extends keyof Full, V extends keyof Update>(
     match_columns: K[],
     update_columns: V[],
-  ): (match: Pick<Full, K>, value: Update) => Either<Err, Full[]>;
+  ): (match: Pick<Full, K>, value: Update) => These<Err, readonly Full[]>;
   delete_by<K extends keyof Full>(
     match_columns: K[],
-  ): (match: Pick<Full, K>) => Either<Err, Full[]>;
-  list(): Either<Err, Full[]>;
+  ): (match: Pick<Full, K>) => These<Err, readonly Full[]>;
+  list(): These<Err, readonly Full[]>;
 };
 
-export type Database<Env, Err> = (env: Env) => {
+export type DataAccess<Err> = {
   // Base Tables
   elements: Table<
     Element,
-    Omit<Element, "created_at" | "updated_at">,
-    Partial<Omit<Element, "atomic_number">>,
+    Spread<Omit<Element, "created_at" | "updated_at">>,
+    Spread<Partial<Omit<Element, "atomic_number">>>,
     Err
   >;
   molecules: Table<
     Molecule,
-    Pick<Molecule, "name" | "symbol" | "molar_mass">,
-    Partial<Pick<Molecule, "name" | "molar_mass">>,
+    Spread<Pick<Molecule, "name" | "symbol" | "molar_mass">>,
+    Spread<Partial<Pick<Molecule, "name" | "molar_mass">>>,
     Err
   >;
   molecule_elements: Table<
     MoleculeElement,
     MoleculeElement,
-    Pick<MoleculeElement, "atom_count">,
+    Spread<Pick<MoleculeElement, "atom_count">>,
     Err
   >;
   materials: Table<
     Material,
-    Pick<Material, "name" | "category" | "summary">,
-    Partial<Pick<Material, "name" | "category" | "summary">>,
+    Spread<Pick<Material, "name" | "category" | "summary">>,
+    Spread<Partial<Pick<Material, "name" | "category" | "summary">>>,
     Err
   >;
   material_analysis: Table<
     MaterialAnalysis,
-    Pick<MaterialAnalysis, "material_id" | "notes">,
-    Partial<Pick<MaterialAnalysis, "material_id" | "notes">>,
+    Spread<Pick<MaterialAnalysis, "material_id" | "notes">>,
+    Spread<Partial<Pick<MaterialAnalysis, "material_id" | "notes">>>,
     Err
   >;
   material_analysis_molecules: Table<
     MaterialAnalysisMolecule,
     MaterialAnalysisMolecule,
-    Pick<MaterialAnalysisMolecule, "percentage">,
+    Spread<Pick<MaterialAnalysisMolecule, "percentage">>,
     Err
   >;
   recipes: Table<
     Recipe,
-    Pick<Recipe, "name" | "category" | "summary">,
-    Partial<Pick<Recipe, "name" | "category" | "summary">>,
+    Spread<Pick<Recipe, "name" | "category" | "summary">>,
+    Spread<Partial<Pick<Recipe, "name" | "category" | "summary">>>,
     Err
   >;
   recipe_revisions: Table<
     RecipeRevision,
-    Pick<RecipeRevision, "recipe_id" | "notes">,
-    Partial<Pick<RecipeRevision, "recipe_id" | "notes">>,
+    Spread<Pick<RecipeRevision, "recipe_id" | "notes">>,
+    Spread<Partial<Pick<RecipeRevision, "recipe_id" | "notes">>>,
     Err
   >;
   recipe_revision_materials: Table<
     RecipeRevisionMaterial,
     RecipeRevisionMaterial,
-    Pick<RecipeRevisionMaterial, "parts">,
+    Spread<Pick<RecipeRevisionMaterial, "parts">>,
     Err
   >;
 };
+
+export type CreateDataAccess<Env, Err> = (env: Env) => DataAccess<Err>;

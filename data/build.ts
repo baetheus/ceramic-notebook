@@ -1,4 +1,4 @@
-import { Database } from "sqlite";
+import { Database } from "node:sqlite";
 
 import * as Elements from "./read_elements.ts";
 import * as Glazy from "./read_glazy.ts";
@@ -148,5 +148,5 @@ materials.forEach((m, n) => {
     m.Description ?? ""
   }, ${Date.now()}, ${Date.now()}) ON CONFLICT DO NOTHING;`;
 
-  const analysis = m["Percent Analysis"]
+  const analysis = m["Percent Analysis"];
 });

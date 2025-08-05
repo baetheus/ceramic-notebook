@@ -1,1 +1,4 @@
 /.direnv
+/.vscode
+/node_modules
+.env

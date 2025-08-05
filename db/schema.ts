@@ -1,83 +1,121 @@
-// Database schema types for glaze-tool
-// Generated from schema.sql
+import * as S from "fun/schemable";
+import { SchemableDecoder } from "fun/decoder";
 
-export type SchemaMigration = {
-  version: string;
-};
+export const Element = S.schema((s) =>
+  s.struct({
+    atomic_number: s.number(),
+    name: s.string(),
+    symbol: s.string(),
+    category: s.string(),
+    source: s.string(),
+    summary: s.string(),
+    atomic_mass: s.number(),
+    boil: s.nullable(s.number()),
+    melt: s.nullable(s.number()),
+    discovered_by: s.nullable(s.string()),
+    named_by: s.nullable(s.string()),
+    created_at: s.string(),
+    updated_at: s.string(),
+  })
+);
+export type Element = S.TypeOf<typeof Element>;
+export const DecoderElement = Element(SchemableDecoder);
 
-export type Element = {
-  atomic_number: number;
-  name: string;
-  symbol: string;
-  category: string;
-  source: string;
-  summary: string;
-  atomic_mass: number;
-  boil?: number | null;
-  melt?: number | null;
-  discovered_by?: string | null;
-  named_by?: string | null;
-  created_at: string;
-  updated_at: string;
-};
+export const Molecule = S.schema((s) =>
+  s.struct({
+    molecule_id: s.number(),
+    name: s.string(),
+    symbol: s.string(),
+    molar_mass: s.number(),
+    created_at: s.string(),
+    updated_at: s.string(),
+  })
+);
+export type Molecule = S.TypeOf<typeof Molecule>;
+export const DecoderMolecule = Molecule(SchemableDecoder);
 
-export type Molecule = {
-  molecule_id: number;
-  name: string;
-  symbol: string;
-  molar_mass: number;
-  created_at: string;
-  updated_at: string;
-};
+export const MoleculeElement = S.schema((s) =>
+  s.struct({
+    molecule_id: s.number(),
+    atomic_number: s.number(),
+    atom_count: s.number(),
+  })
+);
+export type MoleculeElement = S.TypeOf<typeof MoleculeElement>;
+export const DecoderMoleculeElement = MoleculeElement(SchemableDecoder);
 
-export type MoleculeElement = {
-  molecule_id: number;
-  atomic_number: number;
-  atom_count: number;
-};
+export const Material = S.schema((s) =>
+  s.struct({
+    material_id: s.number(),
+    name: s.string(),
+    category: s.string(),
+    summary: s.string(),
+    created_at: s.string(),
+    updated_at: s.string(),
+  })
+);
+export type Material = S.TypeOf<typeof Material>;
+export const DecoderMaterial = Material(SchemableDecoder);
 
-export type Material = {
-  material_id: number;
-  name: string;
-  category: string;
-  summary: string;
-  created_at: string;
-  updated_at: string;
-};
+export const MaterialAnalysis = S.schema((s) =>
+  s.struct({
+    material_analysis_id: s.number(),
+    material_id: s.number(),
+    notes: s.string(),
+    created_at: s.string(),
+    updated_at: s.string(),
+  })
+);
+export type MaterialAnalysis = S.TypeOf<typeof MaterialAnalysis>;
+export const DecoderMaterialAnalysis = MaterialAnalysis(SchemableDecoder);
 
-export type MaterialAnalysis = {
-  material_analysis_id: number;
-  material_id: number;
-  notes: string;
-  created_at: string;
-  updated_at: string;
-};
+export const MaterialAnalysisMolecule = S.schema((s) =>
+  s.struct({
+    material_analysis_id: s.number(),
+    molecule_id: s.number(),
+    percentage: s.number(),
+  })
+);
+export type MaterialAnalysisMolecule = S.TypeOf<
+  typeof MaterialAnalysisMolecule
+>;
+export const DecoderMaterialAnalysisMolecule = MaterialAnalysisMolecule(
+  SchemableDecoder,
+);
 
-export type MaterialAnalysisMolecule = {
-  material_analysis_id: number;
-  molecule_id: number;
-  percentage: number;
-};
+export const Recipe = S.schema((s) =>
+  s.struct({
+    recipe_id: s.number(),
+    name: s.string(),
+    category: s.string(),
+    summary: s.string(),
+    created_at: s.string(),
+    updated_at: s.string(),
+  })
+);
+export type Recipe = S.TypeOf<typeof Recipe>;
+export const DecoderRecipe = Recipe(SchemableDecoder);
 
-export type Recipe = {
-  recipe_id: number;
-  name: string;
-  category: string;
-  summary: string;
-  created_at: string;
-  updated_at: string;
-};
+export const RecipeRevision = S.schema((s) =>
+  s.struct({
+    recipe_revision_id: s.number(),
+    recipe_id: s.number(),
+    notes: s.string(),
+    created_at: s.string(),
+    updated_at: s.string(),
+  })
+);
+export type RecipeRevision = S.TypeOf<typeof RecipeRevision>;
+export const DecoderRecipeRevision = RecipeRevision(SchemableDecoder);
 
-export type RecipeRevision = {
-  recipe_revision_id: number;
-  recipe_id: number;
-  notes: string;
-  created_at: string;
-  updated_at: string;
-};
-
-export type RecipeRevisionMaterial = {
-  recipe_revision_id: number;
-  material_id: number;
-  parts: number;
-};
+export const RecipeRevisionMaterial = S.schema((s) =>
+  s.struct({
+    recipe_revision_id: s.number(),
+    material_id: s.number(),
+    parts: s.number(),
+  })
+);
+export type RecipeRevisionMaterial = S.TypeOf<typeof RecipeRevisionMaterial>;
+export const DecoderRecipeRevisionMaterial = RecipeRevisionMaterial(
+  SchemableDecoder,
+);
