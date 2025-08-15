@@ -18,7 +18,7 @@ CREATE TABLE material_analysis(
 
 CREATE TABLE material_analysis_molecules(
   material_analysis_id INTEGER NOT NULL REFERENCES material_analysis(material_analysis_id) ON DELETE CASCADE,
-  molecule_id INTEGER NOT NULL REFERENCES molecules(molecule_id) ON DELETE CASCADE,
+  molecule_id INTEGER NOT NULL REFERENCES molecules(molecule_id) ON DELETE RESTRICT,
   percentage REAL NOT NULL,
   PRIMARY KEY(material_analysis_id, molecule_id)
 ) STRICT;

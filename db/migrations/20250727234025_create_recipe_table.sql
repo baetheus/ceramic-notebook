@@ -18,9 +18,9 @@ CREATE TABLE recipe_revisions(
 
 CREATE TABLE recipe_revision_materials(
   recipe_revision_id INTEGER NOT NULL REFERENCES recipe_revisions(recipe_revision_id) ON DELETE CASCADE,
-  material_id INTEGER NOT NULL REFERENCES materials(material_id) ON DELETE CASCADE,
+  material_analysis_id INTEGER NOT NULL REFERENCES material_analysis(material_analysis_id) ON DELETE RESTRICT,
   parts REAL NOT NULL,
-  PRIMARY KEY(recipe_revision_id, material_id)
+  PRIMARY KEY(recipe_revision_id, material_analysis_id)
 ) STRICT;
 
 -- migrate:down

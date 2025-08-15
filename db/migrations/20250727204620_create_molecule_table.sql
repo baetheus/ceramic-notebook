@@ -12,7 +12,7 @@ CREATE TABLE molecules(
 
 CREATE TABLE molecule_elements(
   molecule_id INTEGER NOT NULL REFERENCES molecules(molecule_id) ON DELETE CASCADE,
-  atomic_number INTEGER NOT NULL REFERENCES elements(atomic_number) ON DELETE CASCADE,
+  atomic_number INTEGER NOT NULL REFERENCES elements(atomic_number) ON DELETE RESTRICT,
   atom_count INTEGER NOT NULL,
   PRIMARY KEY(molecule_id, atomic_number)
 ) STRICT;

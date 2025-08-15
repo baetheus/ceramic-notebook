@@ -1,4 +1,14 @@
+# Direnv
 /.direnv
+
+# Editors
 /.vscode
+
+# Stupid nodejs
 /node_modules
+
+# Data
+*.sqlite3*
+
+# Environment
 .env

@@ -24,7 +24,7 @@ CREATE TABLE molecules(
 ) STRICT;
 CREATE TABLE molecule_elements(
   molecule_id INTEGER NOT NULL REFERENCES molecules(molecule_id) ON DELETE CASCADE,
-  atomic_number INTEGER NOT NULL REFERENCES elements(atomic_number) ON DELETE CASCADE,
+  atomic_number INTEGER NOT NULL REFERENCES elements(atomic_number) ON DELETE RESTRICT,
   atom_count INTEGER NOT NULL,
   PRIMARY KEY(molecule_id, atomic_number)
 ) STRICT;
@@ -45,7 +45,7 @@ CREATE TABLE material_analysis(
 ) STRICT;
 CREATE TABLE material_analysis_molecules(
   material_analysis_id INTEGER NOT NULL REFERENCES material_analysis(material_analysis_id) ON DELETE CASCADE,
-  molecule_id INTEGER NOT NULL REFERENCES molecules(molecule_id) ON DELETE CASCADE,
+  molecule_id INTEGER NOT NULL REFERENCES molecules(molecule_id) ON DELETE RESTRICT,
   percentage REAL NOT NULL,
   PRIMARY KEY(material_analysis_id, molecule_id)
 ) STRICT;
@@ -66,9 +66,9 @@ CREATE TABLE recipe_revisions(
 ) STRICT;
 CREATE TABLE recipe_revision_materials(
   recipe_revision_id INTEGER NOT NULL REFERENCES recipe_revisions(recipe_revision_id) ON DELETE CASCADE,
-  material_id INTEGER NOT NULL REFERENCES materials(material_id) ON DELETE CASCADE,
+  material_analysis_id INTEGER NOT NULL REFERENCES material_analysis(material_analysis_id) ON DELETE RESTRICT,
   parts REAL NOT NULL,
-  PRIMARY KEY(recipe_revision_id, material_id)
+  PRIMARY KEY(recipe_revision_id, material_analysis_id)
 ) STRICT;
 -- Dbmate schema migrations
 INSERT INTO "schema_migrations" (version) VALUES
