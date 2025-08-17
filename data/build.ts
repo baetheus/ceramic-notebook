@@ -1,4 +1,4 @@
-import { Database } from "node:sqlite";
+import { DatabaseSync } from "node:sqlite";
 
 import * as Elements from "./read_elements.ts";
 import * as Glazy from "./read_glazy.ts";

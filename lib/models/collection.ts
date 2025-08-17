@@ -1,5 +1,6 @@
-import type { AsyncEither } from "fun/async_either";
-import type { Err } from "~/lib/models/err.ts";
+import type { NonEmptyArray } from "fun/array";
+import type { Either } from "fun/either";
+import type { Err } from "~/lib/err.ts";
 
 /**
  * A collection is effectively a CRUD interface for a "Full" struct over a
@@ -25,8 +26,8 @@ export type Collection<
    * id are chosen by the storage backed.
    */
   create(
-    create: readonly [Create, ...Create[]],
-  ): AsyncEither<Error, readonly Full[]>;
+    create: NonEmptyArray<Create>,
+  ): Either<Error, readonly Full[]>;
 
   /**
    * find_by takes an array of columns that correspond to keys of Full and
@@ -36,7 +37,7 @@ export type Collection<
    */
   find_by<K extends keyof Full>(
     match_columns: K[],
-  ): (match: Pick<Full, K>) => AsyncEither<Error, readonly Full[]>;
+  ): (match: Pick<Full, K>) => Either<Error, readonly Full[]>;
 
   /**
    * update_by takes an array of match_columns that correspond to columns to
@@ -51,7 +52,7 @@ export type Collection<
   ): (
     match: Pick<Full, K>,
     value: Pick<Update, V>,
-  ) => AsyncEither<Err, readonly Full[]>;
+  ) => Either<Err, readonly Full[]>;
 
   /**
    * delete_by takes an array of match columns that correspond to keys of Full
@@ -62,49 +63,11 @@ export type Collection<
    */
   delete_by<K extends keyof Full>(
     match_columns: K[],
-  ): (match: Pick<Full, K>) => AsyncEither<Err, readonly Full[]>;
+  ): (match: Pick<Full, K>) => Either<Err, readonly Full[]>;
 
   /**
    * The list function takes optional count and offset values and returns a list
    * of count rows (defaulting to all) from offset.
    */
-  list(count: number, offset: number): AsyncEither<Err, readonly Full[]>;
+  list(count: number, offset: number): Either<Err, readonly Full[]>;
 };
-
-/**
- * Generic StorageError type represents an error that occurred in the storage
- * layer of a collection.
- */
-export type StorageError = Err<"StorageError"> & {
-  error: string;
-  context?: unknown;
-};
-
-/**
- * Generic ParseError type represents an error that occurred wihle parsing the
- * response from the storage layer.
- */
-export type ParseError = Err<"ParseError"> & {
-  error: string;
-  context?: unknown;
-};
-
-/**
- * Generic CollectionError represents the errors that can occur while using a
- * Collection Implementation
- */
-export type CollectionError = StorageError | ParseError;
-
-/**
- * A constructor function for StorageError
- */
-export function storage_error(error: string, context?: unknown): StorageError {
-  return { type: "StorageError", error, context };
-}
-
-/**
- * A constructor function for ParseError
- */
-export function parse_error(error: string, context?: unknown): ParseError {
-  return { type: "ParseError", error, context };
-}

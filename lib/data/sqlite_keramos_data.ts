@@ -1,5 +1,5 @@
 import type { KeramosData } from "~/lib/models/keramos_data.ts";
-import type { CollectionError } from "~/lib/models/collection.ts";
+import type { CollectionError } from "~/lib/err.ts";
 
 import sqlite from "node:sqlite";
 

@@ -10,8 +10,8 @@ implemented, along with their rough order.
 plans for now, just a good set of primitives.
 [X] Implement Collections over sqlite with response parsing using fun/decoder.
 [ ] Outline the general structure of the server, data first
-    [ ] fn: Read from raw elements data
-    [ ] fn: Initialize elements collection
+    [X] fn: Read from raw elements data
+    [X] fn: Initialize elements collection
     [ ] fn: Chemical formula -> Molecules + MoleculeElements
     [ ] fn: Read from glazy data
     [ ] fn: Glazy data -> Materials + Material Analysis

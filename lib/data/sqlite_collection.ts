@@ -7,71 +7,41 @@
  */
 
 import type { Decoder } from "fun/decoder";
-import type { AsyncEither } from "fun/async_either";
+import type { Either } from "fun/either";
 
-import type { Collection, CollectionError } from "~/lib/models/collection.ts";
+import type { Collection } from "~/lib/models/collection.ts";
+import type { CollectionError } from "~/lib/err.ts";
 
 import sqlite from "node:sqlite";
-import * as AE from "fun/async_either";
 import * as E from "fun/either";
 import * as A from "fun/array";
 import * as D from "fun/decoder";
 import { flow, pipe } from "fun/fn";
 
-import * as C from "~/lib/models/collection.ts";
-
-/**
- * Take a prepared statement and parameters and apply the parameters to the
- * statement using Function.apply. This is because passing large parameter
- * arrays into a function with the spread operator tends to hit the stack
- * overflow limit.
- */
-function run_statement(
-  statement: sqlite.StatementSync,
-  parameters: readonly sqlite.SupportedValueType[],
-) {
-  // deno-lint-ignore no-explicit-any
-  return statement.all.apply(statement, parameters as any);
-}
-
-/**
- * Wrap the run_statement function in a tryCatch that returns an
- * AsyncEither<StorageError, unknown[]>
- */
-const safe_run_statement = AE.tryCatch(
-  run_statement,
-  (err, [statement, params]) =>
-    C.storage_error(
-      `Running sqlite statement.all with sql ${statement.sourceSQL} and ${params.length} parameter(s).`,
-      err,
-    ),
-);
+import * as S from "~/lib/data/sqlite.ts";
+import { parse_error } from "~/lib/err.ts";
 
 /**
  * Take a sqlite statement, parameters, and a Decoder<A> and safely run
  * statement.all then parse the result with the Decoder. Returns an
- * AsyncEither<CollectionError, A>.
+ * Either<CollectionError, A>.
  */
 function all<A>(
   statement: sqlite.StatementSync,
   parameters: readonly sqlite.SupportedValueType[],
   decoder: Decoder<unknown, A>,
-): AsyncEither<CollectionError, A> {
+): Either<CollectionError, A> {
   const parse_context =
     `Parsing result of sqlite statement.all with sql ${statement.sourceSQL} and ${parameters.length} parameter(s).`;
 
   const parser = flow(
     decoder,
-    E.mapSecond(flow(
-      D.draw,
-      (error) => C.parse_error(parse_context, error),
-    )),
-    AE.fromEither,
+    E.mapSecond((decode_error) => parse_error(parse_context, decode_error)),
   );
 
   return pipe(
-    safe_run_statement(statement, parameters),
-    AE.flatmap(parser),
+    S.safe_run_statement(statement, parameters),
+    E.flatmap(parser),
   );
 }
 
@@ -119,16 +89,9 @@ export function createCollection<
   const map_chunks = A.flatmap(map_create);
 
   // Wrap db.prepare in a tryCatch but evaluate the prepare immediately, then
-  // wrap it in an AsyncEither. This allows the actual caching of the prepared
+  // wrap it in an Either. This allows the actual caching of the prepared
   // statement but also lets us catch any thrown errors by db.prepare.
-  const safe_prepare = flow(
-    E.tryCatch(
-      db.prepare,
-      (error, [sql]) =>
-        C.storage_error("Error preparing sqlite sql statement", { error, sql }),
-    ),
-    AE.fromEither,
-  );
+  const safe_prepare = S.create_safe_prepare(db);
 
   // List statement
   const list_statement = safe_prepare(
@@ -143,7 +106,7 @@ export function createCollection<
         safe_prepare(
           `INSERT INTO ${table} ${joined_columns} VALUES ${value_str} RETURNING *;`,
         ),
-        AE.flatmap((statement) => all(statement, value_params, many_decoder)),
+        E.flatmap((statement) => all(statement, value_params, many_decoder)),
       );
     },
 
@@ -156,7 +119,7 @@ export function createCollection<
       return (value) =>
         pipe(
           safe_statement,
-          AE.flatmap((statement) =>
+          E.flatmap((statement) =>
             all(statement, from_columns(match_columns, value), many_decoder)
           ),
         );
@@ -176,7 +139,7 @@ export function createCollection<
       return (match, value) =>
         pipe(
           safe_statement,
-          AE.flatmap((statement) =>
+          E.flatmap((statement) =>
             all(statement, [
               ...from_columns(update_columns, value),
               ...from_columns(match_columns, match),
@@ -198,9 +161,7 @@ export function createCollection<
     list: (count, offset) =>
       pipe(
         list_statement,
-        AE.flatmap((statement) =>
-          all(statement, [count, offset], many_decoder)
-        ),
+        E.flatmap((statement) => all(statement, [count, offset], many_decoder)),
       ),
   };
 }

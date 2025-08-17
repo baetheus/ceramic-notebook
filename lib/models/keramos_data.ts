@@ -1,6 +1,6 @@
 import type { Spread } from "fun/kind";
 
-import type { Err } from "~/lib/models/err.ts";
+import type { CollectionError } from "~/lib/err.ts";
 import type { Collection } from "~/lib/models/collection.ts";
 import type {
   Element,
@@ -26,7 +26,7 @@ type Empty<Source> = Limit<Source, keyof Source>;
  * primarily Collections over database tables. In the future, when more
  * complicated joined queries become needed, it will contain those as well.
  */
-export type KeramosData<Error extends Err> = {
+export type KeramosData<Error extends CollectionError = CollectionError> = {
   readonly elements: Collection<
     Error,
     Limit<Element, "atomic_number">,
